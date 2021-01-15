@@ -1,0 +1,95 @@
+version: '3'
+
+networks:
+  backend:
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./docker/nginx
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    links:
+      - php-fpm
+    networks:
+      - backend
+  php-fpm:
+    container_name: php-fpm
+    build:
+      context: ./docker/php
+    volumes:
+      - ./:/var/www
+    links:
+      - postgres
+      - redis
+      - elasticsearch
+    environment:
+      - "DB_PORT=5432"
+      - "DB_HOST=postgres"
+      - "REDIS_PORT=6379"
+      - "REDIS_HOST=redis"
+      - "ELASTICSEARCH_HOSTS=elasticsearch:9200"
+    networks:
+      - backend
+  postgres:
+    container_name: postgres
+    image: postgres:12.3-alpine
+    volumes:
+      - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: boardman
+      POSTGRES_DB: board
+      POSTGRES_PASSWORD:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+  redis:
+    container_name: redis
+    image: redis:3.0
+    ports:
+      - "63791:6379"
+    networks:
+      - backend
+  elasticsearch:
+    container_name: elasticsearch
+    build:
+      context: ./docker/elasticsearch
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./storage/docker/elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "9201:9200"
+    networks:
+      - backend
+  rabbitmq:
+    container_name: rabbitmq
+    build: ./docker/rabbitmq
+    ports:
+      - "${RABBITMQ_NODE_HOST_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_HTTP_HOST_PORT}:15672"
+      - "${RABBITMQ_MANAGEMENT_HTTPS_HOST_PORT}:15671"
+    privileged: true
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    hostname: rabbitmq
+    volumes:
+      - ${DATA_PATH_HOST}/rabbitmq:/var/lib/rabbitmq
+    depends_on:
+      - php-fpm
+    networks:
+      - backend
+volumes:
+  pgdata:
