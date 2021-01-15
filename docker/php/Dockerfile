@@ -9,7 +9,7 @@ RUN set -xe; \
       docker-php-ext-configure zip; \
       docker-php-ext-install zip && \
             php -m | grep -q 'zip' \
-      docker-php-ext-install pgsql pdo_pgsql \
+      docker-php-ext-install pdo pgsql pdo_pgsql \
 
 RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet
 
