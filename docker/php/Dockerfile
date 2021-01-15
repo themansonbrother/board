@@ -1,33 +1,22 @@
 FROM php:7.4-fpm
 
-RUN set -xe; \
-    apt-get update -yqq && \
-    pecl channel-update pecl.php.net && \
-    apt-get install -yqq \
-      apt-utils \
-      libzip-dev zip unzip && \
-      docker-php-ext-configure zip; \
-      docker-php-ext-install zip && \
-            php -m | grep -q 'zip' \
-      docker-php-ext-install pdo pgsql pdo_pgsql \
+RUN ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 
-RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet
-
-COPY ./laravel.ini /usr/local/etc/php/conf.d
-
-USER root
-
-# Clean up
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm /var/log/lastlog /var/log/faillog
-
-# Configure locale.
-ARG LOCALE=POSIX
-ENV LC_ALL ${LOCALE}
+RUN apt-get update \
+&& apt-get install -y git \
+                      cron \
+                      zlib1g-dev \
+                      libfreetype6-dev \
+                      libzip-dev \
+                      libpng-dev \
+                      libpq-dev \
+&& docker-php-ext-install pdo pgsql pdo_pgsql zip bcmath gd \
+&& curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
 WORKDIR /var/www
 
-CMD ["php-fpm"]
+RUN usermod -u 1000 www-data
+
+RUN chown -R www-data:www-data .
 
 EXPOSE 9000
