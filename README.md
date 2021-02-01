@@ -9,3 +9,4 @@
     ***make build***
 4) перейти в контейнер php ***docker-compose exec php-fpm bash***
 5) накатить миграции ***php artisan migrate***
+6) наполнить таблицы ***php artisan db:seed --class=CitiesAndCountriesSeeder***
