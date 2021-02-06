@@ -17,9 +17,9 @@ class AlterUsersTable extends Migration
             $table->string('surname');
             $table->string('patronymic')->nullable();
             $table->string('phone')->unique();
-            $table->string('call_availability');
-            $table->string('role');
-            $table->string('status');
+            $table->string('call_availability')->nullable();
+            $table->string('role')->nullable();
+            $table->string('status')->default('email_activation');
         });
     }
 
