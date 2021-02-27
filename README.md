@@ -9,8 +9,7 @@
     `make build`
 4) перейти в контейнер `php docker-compose exec php-fpm bash`
    - установить зависимости `composer install`
-   - накатить миграции `php artisan migrate`
-   - наполнить таблицы `php artisan db:seed --class=CitiesAndCountriesSeeder`
-7) создать администратора:
-    - `php docker-compose exec php-fpm bash`
+   - накатить миграции `php artisan migrate --seed --seeder=PermissionsSeeder`
+   - наполнить таблицы городов и регионов `php artisan db:seed --class=CitiesAndCountriesSeeder`
+   - создать администратора:
     - `php artisan command:admin`

@@ -61,9 +61,24 @@ class CreateAdmin extends Command
 
         $user->save();
 
-        $role = Role::create(['name' => 'super admin']);
-        $permission = Permission::create(['name' => 'god']);
-        $role->givePermissionTo($permission);
+        $admin = Role::create(['name' => 'admin']);
+        $admin->givePermissionTo('add personal information');
+        $admin->givePermissionTo('edit personal information');
+        $admin->givePermissionTo('delete personal information');
+        $admin->givePermissionTo('add advertisement');
+        $admin->givePermissionTo('edit advertisement');
+        $admin->givePermissionTo('delete advertisement');
+        $admin->givePermissionTo('publish advertisement');
+        $admin->givePermissionTo('unpublish advertisement');
+        $admin->givePermissionTo('add category');
+        $admin->givePermissionTo('edit category');
+        $admin->givePermissionTo('delete category');
+        $admin->givePermissionTo('add city');
+        $admin->givePermissionTo('edit city');
+        $admin->givePermissionTo('delete city');
+        $admin->givePermissionTo('add region');
+        $admin->givePermissionTo('edit region');
+        $admin->givePermissionTo('delete region');
 
         $this->info('The command was successful!');
 
