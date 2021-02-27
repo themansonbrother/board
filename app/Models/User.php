@@ -16,12 +16,17 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $phone
  * @property string $email
  * @property string $password
+ * @property string $status
  * @package App\Models
  */
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
+
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_EMAIL_ACTIVATION = 'email_activation';
+    public const STATUS_BLOCKED = 'blocked';
 
     /**
      * The attributes that are mass assignable.
@@ -35,6 +40,7 @@ class User extends Authenticatable
         'phone',
         'email',
         'password',
+        'status',
     ];
 
     /**

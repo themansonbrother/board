@@ -47,6 +47,7 @@ class CreateAdmin extends Command
         $user->surname = $this->ask('Surname');
         $user->email = $this->ask('Email');
         $user->phone = $this->ask('Phone');
+        $user->status = User::STATUS_ACTIVE;
         $password = $this->secret('Password');
         $confirmPassword = $this->secret('Confirm password');
 
